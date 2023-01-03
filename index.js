@@ -11,6 +11,7 @@ const logger = require('morgan');
 const cors = require('cors');
 
 const passport = require('passport');
+const multer = require('multer');
 /*
 * IMPORTAR RUTAS 
 */
@@ -37,8 +38,12 @@ app.disable('x-powered-by');
 //Definir el puerto 
 app.set('port', PORT);
 
+const upload = multer({
+    storage: multer.memoryStorage()
+});
+
 //Llamado de las rutas
-usersRoutes(app);
+usersRoutes(app, upload);
 
 // Tambien se puede hacer con app.listen()
 app.listen(process.env.PORT || 3000, ()=>{

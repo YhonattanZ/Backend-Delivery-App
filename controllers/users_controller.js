@@ -1,7 +1,8 @@
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const keys = require('../config/keys')
+const keys = require('../config/keys');
+const storage = require('../utils/cloud_storage');
 
 module.exports = {
     login(req,res){
@@ -77,5 +78,42 @@ module.exports = {
                 data: data // ID del nuevo usuario registrado
             });
         });
-    }
+
+
+    },
+    async registerWithImage(req,res){
+        const user = JSON.parse(req.body.user); //Captura los datos del cliente 
+        
+        //Almacenar la imagen
+        const files = req.files;
+        if(files.length > 0){
+            const path = `image_${(Date.now)}`
+            const url = await storage(file[0], path);
+            if(url != undefined && url != null){
+                user.image = url;
+            }
+        }
+       
+        User.create(user, (err,data) =>{
+
+
+            if(err){
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al registrar usuario',
+                    error: err
+                });
+            }
+
+            user.id = data;
+
+            return res.status(201).json({
+                success: true,
+                message: 'Registro de usuario realizado correctamente',
+                data: user  // ID del nuevo usuario registrado
+            });
+        });
+
+
+    },
 } 
