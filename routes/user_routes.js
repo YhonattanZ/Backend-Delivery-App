@@ -9,7 +9,7 @@ module.exports = (app, upload) => {
     //DELETE - Eliminar datos 
     
     app.post('/api/users/create',usersCtrl.register);
-    app.post('/api/users/createWithImage',upload.array('image',1), usersCtrl.registerWithImage);
+    app.post('/api/users/createWithImage',upload.array('image', 1), usersCtrl.registerWithImage);
     app.post('/api/users/login', usersCtrl.login);
 
 }

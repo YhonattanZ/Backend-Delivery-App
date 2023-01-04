@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
 const storage = require('../utils/cloud_storage');
-
+const rol = require('../models/roles')
 module.exports = {
     login(req,res){
     //Obtener email y password
@@ -32,6 +32,7 @@ module.exports = {
         const token = jwt.sign({id: myUser.id,email: myUser.email}, keys.secretOrKey, {
             
         });
+        
         //Respuesta del cliente
         const data = {
             id: `${myUser.id}`,
@@ -41,7 +42,9 @@ module.exports = {
             phone: myUser.phone,
             image: myUser.image,
             password: myUser.password,
-            session_token: `JWT ${token}`
+            session_token: `JWT ${token}`,
+            //JSON.parse transforma la respuesta en un JSON nativo sin /
+            roles: JSON.parse(myUser.roles)
         }
 
         return res.status(201).json({
@@ -81,14 +84,14 @@ module.exports = {
 
 
     },
-    async registerWithImage(req,res){
+    async registerWithImage(req,res) {
         const user = JSON.parse(req.body.user); //Captura los datos del cliente 
         
         //Almacenar la imagen
         const files = req.files;
         if(files.length > 0){
-            const path = `image_${(Date.now)}`
-            const url = await storage(file[0], path);
+            const path = `image_${Date.now()}`
+            const url = await storage(files[0], path);
             if(url != undefined && url != null){
                 user.image = url;
             }
@@ -105,15 +108,28 @@ module.exports = {
                 });
             }
 
-            user.id = data;
+            user.id = `${data}`;      
+            const token = jwt.sign({id: user.id,email: user.email}, keys.secretOrKey, {});
+            user.session_token =`JWT ${token}`;
+            
+            rol.create(user.id, 3, (err, data) =>{
+                if(err){
+                    return res.status(501).json({
+                        success: false, 
+                        message: 'Fallo al asignar rol del usuario',
+                        error:err
+                    });
+                }
 
-            return res.status(201).json({
-                success: true,
-                message: 'Registro de usuario realizado correctamente',
-                data: user  // ID del nuevo usuario registrado
+                return res.status(201).json({
+                     success: true,
+                     message: 'Registro de usuario realizado correctamente',
+                     data: user  // ID del nuevo usuario registrado
+                 });
             });
+
         });
 
 
-    },
+    }
 } 

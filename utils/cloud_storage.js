@@ -3,6 +3,7 @@ const { format } = require('util');
 const env = require('../config/env')
 const url = require('url');
 const { v4: uuidv4 } = require('uuid');
+const path = require('path');
 const uuid = uuidv4();
 
 
@@ -22,14 +23,13 @@ const bucket = storage.bucket("gs://delivery-app-cf904.appspot.com/");
 module.exports = (file, pathImage, deletePathImage) => {
     return new Promise((resolve, reject) => {
         
-        console.log('delete path', deletePathImage)
         if (deletePathImage) {
-
+            
             if (deletePathImage != null || deletePathImage != undefined) {
                 const parseDeletePathImage = url.parse(deletePathImage)
                 var ulrDelete = parseDeletePathImage.pathname.slice(23);
                 const fileDelete = bucket.file(`${ulrDelete}`)
-
+                
                 fileDelete.delete().then((imageDelete) => {
 
                     console.log('se borro la imagen con exito')
@@ -39,12 +39,12 @@ module.exports = (file, pathImage, deletePathImage) => {
 
             }
         }
-
-
+        
+        
         if (pathImage) {
             if (pathImage != null || pathImage != undefined) {
-
-                let fileUpload = bucket.file(`${pathImage}`);
+                
+                let fileUpload = bucket.file(pathImage);
                 const blobStream = fileUpload.createWriteStream({
                     metadata: {
                         contentType: 'image/png',
@@ -53,18 +53,19 @@ module.exports = (file, pathImage, deletePathImage) => {
                         }
                     },
                     resumable: false
-
+                    
                 });
-
+                
                 blobStream.on('error', (error) => {
                     console.log('Error al subir archivo a firebase', error);
                     reject('Something is wrong! Unable to upload at the moment.');
                 });
-
+                
                 blobStream.on('finish', () => {
                     // The public URL can be used to directly access the file via HTTP.
                     const url = format(`https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${fileUpload.name}?alt=media&token=${uuid}`);
                     console.log('URL DE CLOUD STORAGE ', url);
+                    console.log(fileUpload.id)
                     resolve(url);
                 });
 
