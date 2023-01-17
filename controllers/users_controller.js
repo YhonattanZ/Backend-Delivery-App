@@ -111,7 +111,7 @@ module.exports = {
             user.id = `${data}`;      
             const token = jwt.sign({id: user.id,email: user.email}, keys.secretOrKey, {});
             user.session_token =`JWT ${token}`;
-            
+            //Crea el rol por defecto CLIENT con el id_rol 3 
             rol.create(user.id, 3, (err, data) =>{
                 if(err){
                     return res.status(501).json({
@@ -131,5 +131,88 @@ module.exports = {
         });
 
 
+    },
+    //Actualizar datos incluyendo la imagen del usuario
+    async updateWithImage(req,res) {
+
+        const user = JSON.parse(req.body.user); //Actualiza los datos con imagen 
+        
+        //Almacenar la imagen en Firestore
+        const files = req.files;
+
+        if(files.length > 0){
+            const path = `image_${Date.now()}`
+            const url = await storage(files[0], path);
+            if(url != undefined && url != null){
+                user.image = url;
+            }
+        }
+       
+        User.updatewithImage(user, (err,data) =>{
+
+            if(err){
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al registrar usuario',
+                    error: err
+                });
+            }
+ 
+            User.findById(data,(err,MyData) => {
+                if(err){
+                    return res.status(501).json({
+                        success: false,
+                        message: 'hubo un error con el registro de usuario',
+                        error: err
+                    });
+                }
+            
+                MyData[0].session_token = user.session_token;
+                MyData[0].roles = JSON.parse(MyData[0].roles);
+
+                return res.status(201).json({
+                success: true,
+                message: 'El usuario se ha actualizado',
+                data: MyData
+                });
+
+            })
+        });
+    },
+    //Acualiza los d                                                                    sxnm xnzttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttatos del usuario sin sobreescribir la imagen
+    async updateWithoutImage(req,res) {
+
+        const user = req.body; //Actualiza los datos de manera normal
+       
+        User.updateWithoutImage(user, (err,data) =>{
+            if(err){
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al registrar usuario',
+                    error: err
+                });
+            }
+ 
+            User.findById(data,(err,MyData) => {
+                if(err){
+                    return res.status(501).json({
+                        success: false,
+                        message: 'hubo un error con el registro de usuario',
+                        error: err
+                    });
+                }
+               
+                MyData.session_token = user.session_token;
+                MyData[0].roles = JSON.parse(MyData[0].roles);
+                
+                return res.status(201).json({
+                success: true,
+                message: 'El usuario se ha actualizado',
+                data: MyData
+                });
+
+            })
+
+        });
     }
 } 

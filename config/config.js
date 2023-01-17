@@ -1,5 +1,5 @@
 const mysql = require('mysql');
-
+//Crea la conexion con la base de datos, los datos para crear la conexion es nombre del host, nombre del usuario en la DB, contrasena y nombre de la DB a usar
 const db = mysql.createConnection({
     host:'localhost',
     user: 'root',

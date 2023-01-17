@@ -3,7 +3,8 @@ const db =require('../config/config');
 const rol = {};
 //Crear rol de usuario por defecto el rol sera CLIENTE
 rol.create = (id_user, id_rol, result) =>{
-    const sql = `
+    const sql = //Tabla user_has_roles
+    ` 
     INSERT INTO 
     user_has_roles(
         id_user,

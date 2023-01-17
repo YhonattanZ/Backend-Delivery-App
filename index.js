@@ -16,7 +16,8 @@ const multer = require('multer');
 * IMPORTAR RUTAS 
 */
 const usersRoutes = require('./routes/user_routes');
-
+const categoriesRoutes = require('./routes/category_routes');
+const productsRoutes = require('./routes/product_routes');
 //Puerto local
 const PORT = process.env.PORT|| 3000;
 //Debug los futuros errores del server
@@ -38,12 +39,15 @@ app.disable('x-powered-by');
 //Definir el puerto 
 app.set('port', PORT);
 
+//Almacenamiento temporal 
 const upload = multer({
     storage: multer.memoryStorage()
 });
 
 //Llamado de las rutas
 usersRoutes(app, upload);
+categoriesRoutes(app);
+productsRoutes(app,upload);
 
 // Tambien se puede hacer con app.listen()
 app.listen(process.env.PORT || 3000, ()=>{
@@ -51,10 +55,11 @@ app.listen(process.env.PORT || 3000, ()=>{
     console.log(`Servidor corriendo en el puerto ${port}`);
 });
 
+//Obtener informacion del endpoint de prueba /
 app.get('/', (req,res)=> {
     res.send('Ruta Inicial Confirmada');
 });
-
+//Obtener informacion del endpoint de prueba /test
 app.get('/test', (req,res)=> {
     res.send('Ruta Test Confirmada');
 });
@@ -62,8 +67,19 @@ app.get('/test', (req,res)=> {
 // error handler
  
 app.use((err, req, res, next) => {
+
     console.log(err);
     res.status(err.status || 500).send(err.stack);
+// Dominio que tengan acceso (ej. 'http://example.com')
+   res.setHeader('Access-Control-Allow-Origin', '*');
+
+// Metodos de solicitud que deseas permitir
+   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+
+// Encabecedados que permites (ej. 'X-Requested-With,content-type')
+   res.setHeader('Access-Control-Allow-Headers', '*');
+
+next();
 });
 
 module.exports = {

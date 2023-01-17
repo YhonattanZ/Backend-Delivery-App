@@ -3,57 +3,52 @@ const bcrypt = require('bcryptjs');
 const User = {};
 //Encontrar usuario por ID
 User.findById = (id, result) => {
-    const sql = 
+    const sql = //Encontrar por email y extrar el rol
     `
-    SELECT
-        U.id,
-		U.email,
-        U.name,
-        U.lastname,
-        U.image,
-        U.phone,
-        U.password,
-        JSON_ARRAYAGG(
-        JSON_OBJECT(
-        'id', CONVERT(R.id, char),
-        'name', R.name,
-        'image', R.image,
-        'route', R.route
-			)
-        ) AS roles
-    FROM
-        users AS U      
-    INNER JOIN
-		user_has_roles AS UHR    
-	    ON UHR.id_user = U.id         
-    INNER JOIN
-		roles AS R
-        ON UHR.id_rol = R.id
-    WHERE
-        id = ?
-	GROUP BY
-    U.id
+SELECT
+    CONVERT(U.id, char) AS id,
+	U.email,
+    U.name,
+    U.lastname,
+    U.image,
+    U.phone,
+    U.password,
+    JSON_ARRAYAGG(
+    JSON_OBJECT(
+    'id', CONVERT(R.id, char),
+    'name', R.name,
+    'image', R.image,
+    'route', R.route
+	)
+    ) AS roles
+FROM
+    users AS U      
+INNER JOIN
+	user_has_roles AS UHR    
+	ON UHR.id_user = U.id         
+INNER JOIN
+	roles AS R
+    ON UHR.id_rol = R.id
+WHERE
+    U.id 
     `;
-
     db.query(
         sql,
         [id],
-        (err,res) =>{
-            if(err){
+        (err, user) => {
+            if (err){
                 console.log('Error:', err)
                 result(err,null);
+            }else{
+                console.log('Usuario obtenido ', user);
+                result(null, user);
             }
-            else{
-                console.log('Usuario:', res);
-                result(err, res);
-            }
-        },
-        )
+})
 }
 
 //Encontrar usuario por Email
 User.findByEmail = (email, result) => {
-    const sql = 
+    const sql = //Encontrar por email y extrar el rol
     `
     SELECT
         U.id,
@@ -145,6 +140,87 @@ User.create = async (user, result) => {
         }
 
     )
+}
+//Metodo para actualizar datos del usuario
+User.updatewithImage = (user,result) => {
+
+const sql = `
+UPDATE
+    users
+SET
+    name = ?,    
+    lastname = ?,    
+    phone = ?,    
+    image = ?,    
+    updated_at = ?    
+ WHERE
+    id = ?
+`;
+
+db.query
+    (
+        sql,
+        [
+            user.name,
+            user.lastname,
+            user.phone,
+            user.image,
+            new Date(),
+            user.id
+        ],
+        (err,res) =>{
+            if(err){
+                console.log('Error:', err)
+                result(err,null);
+            }
+            else{
+                console.log('Usuario actualizado:', user.id);
+                result(null, user);
+            }
+        }
+
+    )
+
+}
+
+//Metodo para actualizar el usuario pero no la imagen
+User.updateWithoutImage = (user,result) => {
+
+const sql = `
+UPDATE
+    users
+SET
+    name = ?,    
+    lastname = ?,    
+    phone = ?,        
+    updated_at = ?    
+ WHERE
+    id = ?
+`;
+
+db.query
+    (
+        sql,
+        [
+            user.name,
+            user.lastname,
+            user.phone,
+            new Date(),
+            user.id
+        ],
+        (err,res) =>{
+            if(err){
+                console.log('Error:', err)
+                result(err,null);
+            }
+            else{
+                console.log('La informacion personal se ha actualizado:', user.id);
+                result(null, user);
+            }
+        }
+
+    )
+
 }
 
 module.exports = User;
