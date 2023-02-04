@@ -4,6 +4,29 @@ const asyncForEach =require('../utils/async_foreach');
 
 
 module.exports = {
+//Obtener todos los productos de una categoria
+    findByCategory(req,res){
+
+        const id_category = req.params.id_category;
+
+        Product.findByCategory(id_category, (err,data)=>{
+            if(err){
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al momento de listar las categorias',
+                    error: err
+                });
+            }
+
+            return res.status(201).json({
+                success:true,
+                message: 'Categoria solicitadas correctamente',
+                data: data //Traemos las categorias como una lista
+            });
+        })
+    },
+
+
     //Metodo para crear categorias
     create(req, res) {
 

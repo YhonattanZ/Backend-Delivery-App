@@ -8,6 +8,8 @@ module.exports = (app,upload) => {
     //PUT - Actualizar datos 
     //DELETE - Eliminar datos 
     
-    //Crear usuarios
+    //Crear productos
     app.post('/api/products/create',passport.authenticate('jwt',{session: false}),upload.array('image', 3), productsCtrl.create);
+    //Obtener productos de una categoria
+    app.get('/api/products/findByCategory/:id_category',passport.authenticate('jwt',{session: false}), productsCtrl.findByCategory);
 }
