@@ -19,6 +19,7 @@ const usersRoutes = require('./routes/user_routes');
 const categoriesRoutes = require('./routes/category_routes');
 const productsRoutes = require('./routes/product_routes');
 const addressRoutes = require('./routes/address_routes');
+const ordersRoutes = require('./routes/order_routes');
 //Puerto local
 const PORT = process.env.PORT|| 3000;
 //Debug los futuros errores del server
@@ -50,6 +51,7 @@ usersRoutes(app, upload);
 categoriesRoutes(app);
 productsRoutes(app,upload);
 addressRoutes(app);
+ordersRoutes(app);
 
 // Tambien se puede hacer con app.listen()
 app.listen(process.env.PORT || 3000, ()=>{

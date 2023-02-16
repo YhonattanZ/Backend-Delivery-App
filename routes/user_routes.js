@@ -17,7 +17,9 @@ module.exports = (app, upload) => {
 
 
 
-    //Update con imagen (PUT)
+    //Obtener la lista de los deliverys
+    app.get('/api/users/findDeliveryMen', passport.authenticate('jwt',{session:false}),usersCtrl.findDeliveryMen);
+    
     app.put('/api/users/update', passport.authenticate('jwt',{session:false}),upload.array('image', 1),usersCtrl.updateWithImage);
     //Update SIN imagen (PUT)
     app.put('/api/users/updateWithoutImage', passport.authenticate('jwt',{session:false}),usersCtrl.updateWithoutImage);
