@@ -12,6 +12,8 @@ module.exports = (app) => {
     app.get('/api/orders/findByStatus/:status',passport.authenticate('jwt',{session: false}),OrdersCtrl.findByStatus);
     //Traer los pedidos por status y delivery
     app.get('/api/orders/findByDeliveryAndStatus/:id_delivery/:status',passport.authenticate('jwt',{session: false}),OrdersCtrl.findByDeliveryAndStatus);
+    //
+    app.get('/api/orders/findByClientAndStatus/:id_client/:status',passport.authenticate('jwt',{session: false}),OrdersCtrl.findByClientAndStatus);
 
     //Crear categorias (POST)
     app.post('/api/orders/create',passport.authenticate('jwt',{session: false}),OrdersCtrl.create);
