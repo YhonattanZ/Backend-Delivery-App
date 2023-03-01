@@ -1,4 +1,6 @@
 const express = require('express');
+const path = require('path');
+require('dotenv').config();
 //Inicializar app
 const app = express();
 
@@ -12,6 +14,11 @@ const cors = require('cors');
 
 const passport = require('passport');
 const multer = require('multer');
+const io = require('socket.io')(server);
+
+//IMPORTAR SOCKETS
+const orderSocket = require('./sockets/orders_socket'); 
+
 /*
 * IMPORTAR RUTAS 
 */
@@ -41,6 +48,10 @@ app.disable('x-powered-by');
 //Definir el puerto 
 app.set('port', PORT);
 
+//Llamado a los sockets
+orderSocket(io);
+
+
 //Almacenamiento temporal 
 const upload = multer({
     storage: multer.memoryStorage()
@@ -53,10 +64,14 @@ productsRoutes(app,upload);
 addressRoutes(app);
 ordersRoutes(app);
 
+const publicPath = path.resolve( __dirname, 'public');
+
+app.use( express.static(publicPath));
+
 // Tambien se puede hacer con app.listen()
-app.listen(process.env.PORT || 3000, ()=>{
-    const port = process.env.PORT || 3000;
-    console.log(`Servidor corriendo en el puerto ${port}`);
+server.listen(process.env.PORT, (err)=>{
+    if (err) throw new Error(err);
+    console.log('Servidor corriendo en puerto', process.env.PORT);
 });
 
 //Obtener informacion del endpoint de prueba /

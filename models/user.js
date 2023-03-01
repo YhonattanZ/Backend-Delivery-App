@@ -40,7 +40,7 @@ WHERE
                 console.log('Error:', err)
                 result(err,null);
             }else{
-                console.log('Usuario obtenido ', user);
+                
                 result(null, user);
             }
 })
@@ -125,7 +125,7 @@ User.findByEmail = (email, result) => {
                 result(err,null);
             }
             else{
-                console.log('Usuario:', res[0]);
+                
                 result(err, res[0]);
             }
         },

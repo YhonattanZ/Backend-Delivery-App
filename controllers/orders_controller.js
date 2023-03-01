@@ -139,11 +139,28 @@ module.exports = {
                 data: `${id_order}` //ID de la categoria creada
             }); });
     },
+    //Actualizar orden a ENTREGADO
+    updateToDelivered(req,res){
+        const order = req.body;
+        Order.updateToDelivered(order.id,(err, id_order)=> {
+            if(err){
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al actualizar la orden',
+                    error: err
+                });
+            }
+            return res.status(201).json({
+                success:true,
+                message: 'La orden ha sido actualizada',
+                data: `${id_order}` //ID de la categoria creada
+            }); });
+    },
+
     //Actualizar latitud y longitud 
     updateLatLng(req,res){
         const order = req.body;
-
-        console.log('Order:',order);
+        console.log('ORDER:',order);
 
         Order.updateLatLng(order,(err, id_order)=> {
             if(err){

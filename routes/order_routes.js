@@ -22,6 +22,8 @@ module.exports = (app) => {
     app.put('/api/orders/updateToDispatched',passport.authenticate('jwt',{session: false}),OrdersCtrl.updateToDispatched);
     //Actualizar pedido a EN CAMINO
     app.put('/api/orders/updateToOnTheWay',passport.authenticate('jwt',{session: false}),OrdersCtrl.updateToOnTheWay);
+    //Actualizar pedido a ENTREGADO
+    app.put('/api/orders/updateToDelivered',passport.authenticate('jwt',{session: false}),OrdersCtrl.updateToDelivered);
     //Actualizar latitud y longitud
     app.put('/api/orders/updateLatLng',passport.authenticate('jwt',{session: false}),OrdersCtrl.updateLatLng);
    

@@ -364,6 +364,37 @@ Order.updateToOnTheWay = (id_order,result) =>{
             }}
     )
 }
+//Actualizar orden a ENTREGADO
+Order.updateToDelivered = (id_order,result) =>{
+    const sql = `
+    UPDATE
+        orders
+    SET
+        status = ?,
+        updated_at = ?
+    WHERE
+        id = ?    
+    `;
+
+    db.query(
+        sql,
+        [
+            'ENTREGADO',
+            new Date(),
+            id_order
+        ],
+        (err,res) =>{
+            if(err){
+                console.log('Error:', err);
+                result(err,null);
+            }
+            else{
+                result(null,id_order);
+            }}
+    )
+}
+
+
 
 //Actualizar latitud y longitud
 Order.updateLatLng = (order,result) =>{
@@ -392,6 +423,7 @@ Order.updateLatLng = (order,result) =>{
                 result(err,null);
             }
             else{
+           
                 result(null,order.id);
             }}
     )
