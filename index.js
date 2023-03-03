@@ -16,8 +16,16 @@ const passport = require('passport');
 const multer = require('multer');
 const io = require('socket.io')(server);
 
+const mercadopago = require('mercadopago');
+
+mercadopago.configure({
+    sandbox: true,
+    access_token: 'TEST-2624909819854127-030211-d79183abf77196e4026fc498f1aaf5b0-1321606467',
+});
+
 //IMPORTAR SOCKETS
 const orderSocket = require('./sockets/orders_socket'); 
+
 
 /*
 * IMPORTAR RUTAS 
@@ -27,6 +35,7 @@ const categoriesRoutes = require('./routes/category_routes');
 const productsRoutes = require('./routes/product_routes');
 const addressRoutes = require('./routes/address_routes');
 const ordersRoutes = require('./routes/order_routes');
+const mercadoPagoRoutes = require('./routes/mercadopago_routes');
 //Puerto local
 const PORT = process.env.PORT|| 3000;
 //Debug los futuros errores del server
@@ -63,6 +72,7 @@ categoriesRoutes(app);
 productsRoutes(app,upload);
 addressRoutes(app);
 ordersRoutes(app);
+mercadoPagoRoutes(app);
 
 const publicPath = path.resolve( __dirname, 'public');
 
