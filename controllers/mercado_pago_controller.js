@@ -15,7 +15,7 @@ module.exports = {
     //Datos del cliente
         const payment_data = {
             token: payment.token,
-            issuer_id: payment.issuer.id,
+            issuer_id: payment.issuer_id,
             payment_method_id: payment.payment_method_id,
             transaction_amount: payment.transaction_amount,
             installments: payment.installments,
