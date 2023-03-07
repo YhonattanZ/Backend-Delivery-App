@@ -25,6 +25,29 @@ module.exports = {
             });
         })
     },
+// Encontrar productos por nombre
+    findByName(req,res){
+
+    //Enviamos el id de la categoria mas el nombre aproximado del producto
+        const id_category = req.params.id_category;
+        const name = req.params.name;
+
+        Product.findByName(name,id_category, (err,data)=>{
+            if(err){
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al momento de listar las categorias',
+                    error: err
+                });
+            }
+
+            return res.status(201).json({
+                success:true,
+                message: 'Categoria solicitadas correctamente',
+                data: data //Traemos las categorias como una lista
+            });
+        })
+    },
 
 
     //Metodo para crear categorias
