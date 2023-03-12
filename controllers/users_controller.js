@@ -228,5 +228,32 @@ module.exports = {
             })
 
         });
+    },
+    
+    async updateNotificationToken(req,res) {
+
+        const id = req.body.id; //Actualiza los datos de manera normal
+        const token = req.body.token;
+
+        User.updateNotificationToken(id,token, (err,id_user) =>{
+            if(err){
+                return res.status(501).json({
+                    success: false,
+                    message: 'Hubo un error al actualizar el token del usuario',
+                    error: err
+                });
+            }
+ 
+           
+                
+                return res.status(201).json({
+                success: true,
+                message: 'El token notificacion se ha actualizado',
+                data: id_user
+                });
+
+         
+
+        });
     }
 } 

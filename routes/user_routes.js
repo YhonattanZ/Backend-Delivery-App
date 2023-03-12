@@ -23,5 +23,7 @@ module.exports = (app, upload) => {
     app.put('/api/users/update', passport.authenticate('jwt',{session:false}),upload.array('image', 1),usersCtrl.updateWithImage);
     //Update SIN imagen (PUT)
     app.put('/api/users/updateWithoutImage', passport.authenticate('jwt',{session:false}),usersCtrl.updateWithoutImage);
+    //Update token de notificacion 
+    app.put('/api/users/updateNotificationToken', passport.authenticate('jwt',{session:false}),usersCtrl.updateNotificationToken);
 
 }
