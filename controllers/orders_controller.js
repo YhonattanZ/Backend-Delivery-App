@@ -1,5 +1,7 @@
 const Order = require('../models/order');
 const OrderHasProducts = require('../models/order_has_products');
+const user = require('../models/user');
+const pushNotificationController = require('../controllers/push_notifications_controller');
 
 module.exports = {
 
@@ -116,6 +118,19 @@ module.exports = {
                     error: err
                 });
             }
+
+user.findById(order.id_delivery, (err,user) => {
+    if(user !== undefined && user !== null){
+        console.log('NOTIFICATION TOKEN', user.notification_token);
+        pushNotificationController.sendNotification(user.notification_token, {
+            title: 'PEDIDO ASIGNADO',
+            body: 'Te ha sido asignado un pedido para entregar',
+            id_notification: '1'
+        });
+    }
+
+});
+
             return res.status(201).json({
                 success:true,
                 message: 'La orden ha sido actualizada',
