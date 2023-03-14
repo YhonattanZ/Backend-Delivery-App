@@ -2,6 +2,8 @@ const e = require('express');
 const mercadopago = require('mercadopago');
 const Order = require('../models/order');
 const OrderHasProducts = require('../models/order_has_products');
+const pushNotificationController = require('./push_notifications_controller');
+const User = require('../models/user');
 
 mercadopago.configure({
     sandbox: true,
@@ -63,6 +65,27 @@ if(data.body !== null && data.body !== undefined){
                 }                    
             });
         }
+
+        User.findAdminRestaurant((err,users) => {
+            if(users !== undefined && users !== null){
+                if(users.length > 0){
+               //Definimos una variable length para almacenar los token en un array
+                    let tokens = [];
+                    users.forEach(u => {
+                        tokens.push(u.notification_token);
+                    });
+                    console.log('TOKENS MULTIUSUARIO', tokens);
+                    pushNotificationController.sendNotificationMultipleDevices(tokens, {
+                        title: 'COMPRA REALIZADA',
+                        body: 'Un cliente ha realizado una compra',
+                        id_notification: '2'
+                    });
+                }
+                
+            }
+        
+        });
+        
 
         return res.status(201).json({
             success:true,
